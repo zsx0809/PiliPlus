@@ -153,7 +153,7 @@ class BliDrawer extends StatelessWidget {
         final face = isLogin ? accountService.face.value : '';
         final level = mineController.userInfo.value.levelInfo?.currentLevel ?? 6;
         final coin = mineController.userInfo.value.money ?? 1024;
-        final bcoin = mineController.userInfo.value.wallet?.bcoinBalance ?? 0.0;
+        final bcoin = mineController.userInfo.value.wallet?['bcoin_balance'] ?? 0;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
