@@ -341,14 +341,7 @@ class _MainAppState extends PopScopeState<MainApp>
     Widget? bottomNav;
     final EdgeInsets padding;
     if (_mainController.useBottomNav) {
-      bottomNav = _bottomNav;
-      if (bottomNav != null) {
-        bottomNav = MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: bottomNav,
-        );
-      }
+      bottomNav = null;
       padding = _padding.copyWith(bottom: 0);
     } else {
       sideBar = DecoratedBox(

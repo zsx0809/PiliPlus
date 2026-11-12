@@ -33,92 +33,101 @@ class BliDrawer extends StatelessWidget {
             Colors.white,
           );
 
-    return Drawer(
-      backgroundColor: drawerBgColor,
-      elevation: 0,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(right: Radius.circular(28)),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 顶部用户信息卡片
-              _buildUserCard(
-                context,
-                colorScheme,
-                accountService,
-                mineController,
-                cardBgColor,
-              ),
-
-              const SizedBox(height: 24),
-
-              // 快捷功能入口列表
-              _buildMenuItem(
-                icon: Icons.history_rounded,
-                title: '历史记录',
-                colorScheme: colorScheme,
-                onTap: () {
-                  Get.back();
-                  Get.toNamed('/history');
-                },
-              ),
-              _buildMenuItem(
-                icon: Icons.download_for_offline_outlined,
-                title: '离线缓存',
-                colorScheme: colorScheme,
-                onTap: () {
-                  Get.back();
-                  Get.toNamed('/download');
-                },
-              ),
-              _buildMenuItem(
-                icon: Icons.star_border_rounded,
-                title: '我的收藏',
-                colorScheme: colorScheme,
-                onTap: () {
-                  Get.back();
-                  Get.toNamed('/fav');
-                },
-              ),
-              _buildMenuItem(
-                icon: Icons.thermostat_outlined,
-                title: '硬件解码与温控',
-                colorScheme: colorScheme,
-                onTap: () {
-                  Get.back();
-                  Get.toNamed('/setting');
-                },
-              ),
-
-              const Spacer(),
-
-              // 底部设置与版本标签
-              _buildMenuItem(
-                icon: Icons.wb_sunny_outlined,
-                title: '设置',
-                colorScheme: colorScheme,
-                onTap: () {
-                  Get.back();
-                  Get.toNamed('/setting');
-                },
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 8),
-                child: Text(
-                  'v2.2.0 · PiliPlus',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorScheme.outline.withValues(alpha: 0.7),
-                    letterSpacing: 0.2,
+    return Semantics(
+      scopesRoute: true,
+      namesRoute: true,
+      label: '侧边栏',
+      explicitChildNodes: true,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints.expand(width: 320),
+        child: Material(
+          color: drawerBgColor,
+          elevation: 16,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.horizontal(right: Radius.circular(28)),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 顶部用户信息卡片
+                  _buildUserCard(
+                    context,
+                    colorScheme,
+                    accountService,
+                    mineController,
+                    cardBgColor,
                   ),
-                ),
+
+                  const SizedBox(height: 24),
+
+                  // 快捷功能入口列表
+                  _buildMenuItem(
+                    icon: Icons.history_rounded,
+                    title: '历史记录',
+                    colorScheme: colorScheme,
+                    onTap: () {
+                      Get.back();
+                      Get.toNamed('/history');
+                    },
+                  ),
+                  _buildMenuItem(
+                    icon: Icons.download_for_offline_outlined,
+                    title: '离线缓存',
+                    colorScheme: colorScheme,
+                    onTap: () {
+                      Get.back();
+                      Get.toNamed('/download');
+                    },
+                  ),
+                  _buildMenuItem(
+                    icon: Icons.star_border_rounded,
+                    title: '我的收藏',
+                    colorScheme: colorScheme,
+                    onTap: () {
+                      Get.back();
+                      Get.toNamed('/fav');
+                    },
+                  ),
+                  _buildMenuItem(
+                    icon: Icons.thermostat_outlined,
+                    title: '硬件解码与温控',
+                    colorScheme: colorScheme,
+                    onTap: () {
+                      Get.back();
+                      Get.toNamed('/setting');
+                    },
+                  ),
+
+                  const Spacer(),
+
+                  // 底部设置与版本标签
+                  _buildMenuItem(
+                    icon: Icons.wb_sunny_outlined,
+                    title: '设置',
+                    colorScheme: colorScheme,
+                    onTap: () {
+                      Get.back();
+                      Get.toNamed('/setting');
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, bottom: 8),
+                    child: Text(
+                      'v2.2.0 · PiliPlus',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.outline.withValues(alpha: 0.7),
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
