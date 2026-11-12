@@ -479,7 +479,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
       : Pref.defaultVideoQa;
   late int cacheAudioQa = Pref.defaultAudioQa;
   bool enableHeart = true;
-  late final String? hwdec = Pref.enableHA ? Pref.hardwareDecoding : null;
+  late final String hwdec = Pref.hardwareDecoding;
 
   late final progressType = Pref.btmProgressBehavior;
   late final enableQuickDouble = Pref.enableQuickDouble;
@@ -847,6 +847,8 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
     final opt = {
       'video-sync': Pref.videoSync,
       if (Platform.isAndroid) 'ao': Pref.audioOutput,
+      'hwdec': hwdec,
+      'hwdec-codecs': 'all',
     };
     final autosync = Pref.autosync;
     if (autosync != '0') {
@@ -871,7 +873,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
     _videoController = await VideoController.create(
       player,
       configuration: VideoControllerConfiguration(
-        enableHardwareAcceleration: hwdec != null,
+        enableHardwareAcceleration: true,
         androidAttachSurfaceAfterVideoParameters: false,
         hwdec: hwdec,
       ),
@@ -1157,7 +1159,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
             }),
           );
         } else if (event.startsWith('Could not open codec')) {
-          SmartDialog.showToast('无法加载解码器, $event，可能会切换至软解');
+          SmartDialog.showToast('硬件解码器启动异常: $event');
         } else if (!onlyPlayAudio.value) {
           if (event.startsWith("error running") ||
               event.startsWith("Failed to open .") ||

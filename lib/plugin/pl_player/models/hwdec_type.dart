@@ -4,10 +4,9 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kDebugMode;
 
 enum HwDecType {
-  no('no', '启用软解'),
-  auto('auto', '启用任意可用解码器'),
-  autoSafe('auto-safe', '启用最佳解码器'),
-  autoCopy('auto-copy', '启用带拷贝功能的最佳解码器'),
+  auto('auto', '启用任意可用硬件解码器'),
+  autoSafe('auto-safe', '启用最佳硬件解码器'),
+  autoCopy('auto-copy', '启用带拷贝功能的最佳硬件解码器'),
   d3d12va('d3d12va', 'DirectX 12 (Windows10 及以上)'),
   d3d12vaCopy('d3d12va-copy', 'DirectX 12 (Windows10 及以上) (非直通)'),
   d3d11va('d3d11va', 'DirectX 11 (Windows8 及以上)'),
@@ -43,8 +42,6 @@ enum HwDecType {
   const HwDecType(this.hwdec, this.desc);
 
   static final String kHwdec = Platform.isAndroid
-      ? kDebugMode
-            ? autoSafe.hwdec
-            : [mediacodec.hwdec, autoSafe.hwdec].join(',')
-      : auto.hwdec;
+      ? [mediacodec.hwdec, mediacodecCopy.hwdec, autoSafe.hwdec].join(',')
+      : autoSafe.hwdec;
 }

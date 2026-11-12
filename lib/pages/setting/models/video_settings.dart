@@ -21,12 +21,10 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:material_ui/material_ui.dart';
 
 List<SettingsModel> get videoSettings => [
-  const SwitchModel(
-    title: '开启硬解',
-    subtitle: '以较低功耗播放视频，若异常卡死请关闭',
-    leading: Icon(Icons.flash_on_outlined),
-    setKey: SettingBoxKey.enableHA,
-    defaultVal: true,
+  const NormalModel(
+    title: '硬件解码状态',
+    subtitle: '已默认强制启用全硬件加速（MediaCodec/GPU），杜绝CPU软解发热',
+    leading: Icon(Icons.flash_on_rounded),
   ),
   const SwitchModel(
     title: '免登录1080P',

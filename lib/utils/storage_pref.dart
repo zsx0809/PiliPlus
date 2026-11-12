@@ -263,10 +263,17 @@ abstract final class Pref {
     return preferCodecs;
   }
 
-  static String get hardwareDecoding => _setting.get(
-    SettingBoxKey.hardwareDecoding,
-    defaultValue: HwDecType.kHwdec,
-  );
+  static String get hardwareDecoding {
+    final val = _setting.get(
+      SettingBoxKey.hardwareDecoding,
+      defaultValue: HwDecType.kHwdec,
+    );
+    if (val == null || val == 'no' || val.isEmpty) {
+      return HwDecType.kHwdec;
+    }
+    final list = val.split(',').where((e) => e != 'no').toList();
+    return list.isNotEmpty ? list.join(',') : HwDecType.kHwdec;
+  }
 
   static String get videoSync =>
       _setting.get(SettingBoxKey.videoSync, defaultValue: 'display-resample');
@@ -800,8 +807,7 @@ abstract final class Pref {
   static bool get enableSponsorBlock =>
       _setting.get(SettingBoxKey.enableSponsorBlock, defaultValue: false);
 
-  static bool get enableHA =>
-      _setting.get(SettingBoxKey.enableHA, defaultValue: true);
+  static bool get enableHA => true;
 
   static Set<int> get danmakuBlockType => Set<int>.from(
     _setting.get(SettingBoxKey.danmakuBlockType, defaultValue: const <int>{}),
