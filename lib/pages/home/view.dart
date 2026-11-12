@@ -10,6 +10,7 @@ import 'package:PiliPlus/pages/mine/controller.dart';
 import 'package:PiliPlus/utils/extension/get_ext.dart';
 import 'package:PiliPlus/utils/extension/size_ext.dart';
 import 'package:PiliPlus/utils/feed_back.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:material_ui/material_ui.dart';
@@ -57,41 +58,53 @@ class _HomePageState extends CommonPageState<HomePage>
 
     // 胶囊 Tab 栏
     Widget capsuleTabBar = _buildCapsuleTabs();
+    final topPadding = MediaQuery.paddingOf(context).top;
 
-    return Container(
-      color: topBarBgColor,
-      child: Column(
-        children: [
-          if (!_mainController.useSideBar &&
-              MediaQuery.sizeOf(context).isPortrait)
-            customAppBar(),
-          capsuleTabBar,
-          const SizedBox(height: 8),
-          Expanded(
-            child: Material(
-              color: contentBgColor,
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (notification) {
-                  // 在最左侧 Tab (直播) 继续向右划呼出侧边栏抽屉
-                  if (_homeController.tabController.index == 0) {
-                    if (notification is OverscrollNotification &&
-                        notification.overscroll < -15) {
-                      mainScaffoldKey.currentState?.openDrawer();
-                      return true;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        systemStatusBarContrastEnforced: false,
+      ),
+      child: Container(
+        color: topBarBgColor,
+        child: Column(
+          children: [
+            SizedBox(height: topPadding),
+            if (!_mainController.useSideBar &&
+                MediaQuery.sizeOf(context).isPortrait)
+              customAppBar(),
+            capsuleTabBar,
+            const SizedBox(height: 8),
+            Expanded(
+              child: Material(
+                color: contentBgColor,
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (notification) {
+                    // 在最左侧 Tab (直播) 继续向右划呼出侧边栏抽屉
+                    if (_homeController.tabController.index == 0) {
+                      if (notification is OverscrollNotification &&
+                          notification.overscroll < -15) {
+                        mainScaffoldKey.currentState?.openDrawer();
+                        return true;
+                      }
                     }
-                  }
-                  return false;
-                },
-                child: onBuild(
-                  tabBarView(
-                    controller: _homeController.tabController,
-                    children: _homeController.tabs.map((e) => e.page).toList(),
+                    return false;
+                  },
+                  child: onBuild(
+                    tabBarView(
+                      controller: _homeController.tabController,
+                      children: _homeController.tabs
+                          .map((e) => e.page)
+                          .toList(),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -106,7 +119,8 @@ class _HomePageState extends CommonPageState<HomePage>
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: AnimatedBuilder(
-        animation: _homeController.tabController.animation ??
+        animation:
+            _homeController.tabController.animation ??
             _homeController.tabController,
         builder: (context, _) {
           final currentIndex = _homeController.tabController.index;
@@ -124,8 +138,10 @@ class _HomePageState extends CommonPageState<HomePage>
               final bgColor = isSelected
                   ? _colorScheme.primary
                   : (isDark
-                      ? _colorScheme.surfaceContainerHighest.withValues(alpha: 0.4)
-                      : Colors.white.withValues(alpha: 0.8));
+                        ? _colorScheme.surfaceContainerHighest.withValues(
+                            alpha: 0.4,
+                          )
+                        : Colors.white.withValues(alpha: 0.8));
 
               final textColor = isSelected
                   ? _colorScheme.onPrimary
@@ -154,17 +170,15 @@ class _HomePageState extends CommonPageState<HomePage>
                       decoration: BoxDecoration(
                         color: bgColor,
                         borderRadius: BorderRadius.circular(22),
-                        border: Border.all(
-                          color: borderColor,
-                          width: 1.2,
-                        ),
+                        border: Border.all(color: borderColor, width: 1.2),
                       ),
                       child: Text(
                         tab.label,
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.w500,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.w500,
                           color: textColor,
                         ),
                       ),
@@ -194,19 +208,14 @@ class _HomePageState extends CommonPageState<HomePage>
 
     if (_homeController.hideTopBar) {
       if (_mainController.barOffset case final barOffset?) {
-        return Obx(
-          () {
-            final offset = barOffset.value;
-            return CustomHeightWidget(
-              offset: Offset(0, -offset),
-              height: Style.topBarHeight - offset,
-              child: Padding(
-                padding: padding,
-                child: child,
-              ),
-            );
-          },
-        );
+        return Obx(() {
+          final offset = barOffset.value;
+          return CustomHeightWidget(
+            offset: Offset(0, -offset),
+            height: Style.topBarHeight - offset,
+            child: Padding(padding: padding, child: child),
+          );
+        });
       }
       if (_homeController.showTopBar case final showTopBar?) {
         return Obx(() {
@@ -246,9 +255,7 @@ class _HomePageState extends CommonPageState<HomePage>
               : Colors.white,
           child: InkWell(
             borderRadius: borderRadius,
-            splashColor: _colorScheme.primaryContainer.withValues(
-              alpha: 0.3,
-            ),
+            splashColor: _colorScheme.primaryContainer.withValues(alpha: 0.3),
             onTap: () => Get.toNamed(
               '/search',
               parameters: _homeController.enableSearchWord
@@ -274,22 +281,21 @@ class _HomePageState extends CommonPageState<HomePage>
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Obx(
-                      () {
-                        final text = _homeController.defaultSearch.value.isNotEmpty
-                            ? _homeController.defaultSearch.value
-                            : '搜索视频、UP 主';
-                        return Text(
-                          text,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: _colorScheme.outline,
-                          ),
-                        );
-                      },
-                    ),
+                    child: Obx(() {
+                      final text =
+                          _homeController.defaultSearch.value.isNotEmpty
+                          ? _homeController.defaultSearch.value
+                          : '搜索视频、UP 主';
+                      return Text(
+                        text,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: _colorScheme.outline,
+                        ),
+                      );
+                    }),
                   ),
                 ],
               ),
@@ -307,121 +313,116 @@ Widget userAvatar({
 }) {
   return Semantics(
     label: "我的 / 侧边栏",
-    child: Obx(
-      () {
-        void openDrawer() {
-          mainScaffoldKey.currentState?.openDrawer();
-        }
+    child: Obx(() {
+      void openDrawer() {
+        mainScaffoldKey.currentState?.openDrawer();
+      }
 
-        if (mainController.accountService.isLogin.value) {
-          return Stack(
-            clipBehavior: .none,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: colorScheme.primary.withValues(alpha: 0.3),
-                    width: 1.5,
-                  ),
-                ),
-                child: NetworkImgLayer(
-                  type: .avatar,
-                  width: 38,
-                  height: 38,
-                  src: mainController.accountService.face.value,
+      if (mainController.accountService.isLogin.value) {
+        return Stack(
+          clipBehavior: .none,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: colorScheme.primary.withValues(alpha: 0.3),
+                  width: 1.5,
                 ),
               ),
-              Positioned.fill(
-                child: Material(
-                  type: .transparency,
-                  child: InkWell(
-                    onTap: openDrawer,
-                    splashColor: colorScheme.primaryContainer.withValues(
-                      alpha: 0.3,
-                    ),
-                    customBorder: const CircleBorder(),
+              child: NetworkImgLayer(
+                type: .avatar,
+                width: 38,
+                height: 38,
+                src: mainController.accountService.face.value,
+              ),
+            ),
+            Positioned.fill(
+              child: Material(
+                type: .transparency,
+                child: InkWell(
+                  onTap: openDrawer,
+                  splashColor: colorScheme.primaryContainer.withValues(
+                    alpha: 0.3,
                   ),
+                  customBorder: const CircleBorder(),
                 ),
               ),
-              Positioned(
-                right: -2,
-                bottom: -2,
-                child: Obx(
-                  () => MineController.anonymity.value
-                      ? IgnorePointer(
-                          child: Container(
-                            padding: const .all(2),
-                            decoration: BoxDecoration(
-                              shape: .circle,
-                              color: colorScheme.secondaryContainer,
-                            ),
-                            child: Icon(
-                              size: 12,
-                              MdiIcons.incognito,
-                              color: colorScheme.onSecondaryContainer,
-                            ),
+            ),
+            Positioned(
+              right: -2,
+              bottom: -2,
+              child: Obx(
+                () => MineController.anonymity.value
+                    ? IgnorePointer(
+                        child: Container(
+                          padding: const .all(2),
+                          decoration: BoxDecoration(
+                            shape: .circle,
+                            color: colorScheme.secondaryContainer,
                           ),
-                        )
-                      : const SizedBox.shrink(),
-                ),
+                          child: Icon(
+                            size: 12,
+                            MdiIcons.incognito,
+                            color: colorScheme.onSecondaryContainer,
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
               ),
-            ],
-          );
-        }
-        return Container(
-          width: 38,
-          height: 38,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: colorScheme.primaryContainer.withValues(alpha: 0.5),
-            border: Border.all(
-              color: colorScheme.primary.withValues(alpha: 0.3),
-              width: 1.5,
             ),
-          ),
-          child: IconButton(
-            tooltip: '呼出侧边栏',
-            style: IconButton.styleFrom(
-              padding: .zero,
-              backgroundColor: Colors.transparent,
-            ),
-            onPressed: openDrawer,
-            icon: Icon(
-              Icons.person_outline_rounded,
-              size: 22,
-              color: colorScheme.primary,
-            ),
-          ),
+          ],
         );
-      },
-    ),
+      }
+      return Container(
+        width: 38,
+        height: 38,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: colorScheme.primaryContainer.withValues(alpha: 0.5),
+          border: Border.all(
+            color: colorScheme.primary.withValues(alpha: 0.3),
+            width: 1.5,
+          ),
+        ),
+        child: IconButton(
+          tooltip: '呼出侧边栏',
+          style: IconButton.styleFrom(
+            padding: .zero,
+            backgroundColor: Colors.transparent,
+          ),
+          onPressed: openDrawer,
+          icon: Icon(
+            Icons.person_outline_rounded,
+            size: 22,
+            color: colorScheme.primary,
+          ),
+        ),
+      );
+    }),
   );
 }
 
 Widget msgBadge(MainController mainController) {
-  return Obx(
-    () {
-      final count = mainController.msgUnReadCount.value;
-      final isNumBadge = mainController.msgBadgeMode == .number;
-      return IconButton(
-        tooltip: '消息',
-        onPressed: () {
-          mainController
-            ..clearUnreadMsg()
-            ..lastCheckUnreadAt = DateTime.now().millisecondsSinceEpoch;
-          Get.toNamed('/whisper');
-        },
-        icon: Badge(
-          isLabelVisible:
-              mainController.msgBadgeMode != .hidden && count != null,
-          alignment: isNumBadge
-              ? const Alignment(0.0, -0.85)
-              : const Alignment(1.0, -0.85),
-          label: isNumBadge && count != null ? Text(count) : null,
-          child: const Icon(Icons.notifications_none_rounded),
-        ),
-      );
-    },
-  );
+  return Obx(() {
+    final count = mainController.msgUnReadCount.value;
+    final isNumBadge = mainController.msgBadgeMode == .number;
+    return IconButton(
+      tooltip: '消息',
+      onPressed: () {
+        mainController
+          ..clearUnreadMsg()
+          ..lastCheckUnreadAt = DateTime.now().millisecondsSinceEpoch;
+        Get.toNamed('/whisper');
+      },
+      icon: Badge(
+        isLabelVisible: mainController.msgBadgeMode != .hidden && count != null,
+        alignment: isNumBadge
+            ? const Alignment(0.0, -0.85)
+            : const Alignment(1.0, -0.85),
+        label: isNumBadge && count != null ? Text(count) : null,
+        child: const Icon(Icons.notifications_none_rounded),
+      ),
+    );
+  });
 }
