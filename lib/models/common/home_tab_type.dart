@@ -12,6 +12,7 @@ import 'package:PiliPlus/pages/rank/controller.dart';
 import 'package:PiliPlus/pages/rank/view.dart';
 import 'package:PiliPlus/pages/rcmd/controller.dart';
 import 'package:PiliPlus/pages/rcmd/view.dart';
+import 'package:PiliPlus/utils/extension/get_ext.dart';
 import 'package:get/get.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -32,7 +33,7 @@ enum HomeTabType implements EnumWithLabel {
   ScrollOrRefreshMixin Function() get ctr => switch (this) {
     HomeTabType.live => Get.find<LiveController>,
     HomeTabType.rcmd => Get.find<RcmdController>,
-    HomeTabType.follow => () => Get.putOrFind(DynamicsController.new),
+    HomeTabType.follow => Get.find<DynamicsController>,
     HomeTabType.hot => Get.find<HotController>,
     HomeTabType.rank => Get.find<RankController>,
     HomeTabType.bangumi ||
