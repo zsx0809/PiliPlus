@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:PiliPlus/common/style.dart';
+import 'package:PiliPlus/common/widgets/bli_drawer.dart';
 import 'package:PiliPlus/common/widgets/floating_navigation_bar.dart';
 import 'package:PiliPlus/common/widgets/flutter/pop_scope.dart';
 import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
@@ -23,6 +24,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nativeapi/nativeapi.dart' as nativeapi;
+
+final GlobalKey<ScaffoldState> mainScaffoldKey = GlobalKey<ScaffoldState>();
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
@@ -361,11 +364,18 @@ class _MainAppState extends PopScopeState<MainApp>
       padding = .only(top: _padding.top, right: _padding.right);
     }
 
-    child = Material(
-      child: MainLayout(
-        sideBar: sideBar,
-        bottomNav: bottomNav,
-        body: Padding(padding: padding, child: child),
+    child = Scaffold(
+      key: mainScaffoldKey,
+      drawer: const BliDrawer(),
+      drawerEdgeDragWidth: 40.0,
+      backgroundColor: Colors.transparent,
+      body: Material(
+        color: Colors.transparent,
+        child: MainLayout(
+          sideBar: sideBar,
+          bottomNav: bottomNav,
+          body: Padding(padding: padding, child: child),
+        ),
       ),
     );
 

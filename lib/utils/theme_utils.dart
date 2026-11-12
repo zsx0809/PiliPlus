@@ -92,11 +92,13 @@ abstract final class ThemeUtils {
       popupMenuTheme: PopupMenuThemeData(
         surfaceTintColor: isDark ? colorScheme.surfaceContainerHighest : null,
       ),
+      scaffoldBackgroundColor: isDark ? colorScheme.surface : Colors.white,
       cardTheme: CardThemeData(
-        elevation: 1,
+        color: isDark ? colorScheme.surfaceContainer : Colors.white,
+        elevation: 0,
         margin: EdgeInsets.zero,
         shadowColor: Colors.transparent,
-        surfaceTintColor: isDark ? colorScheme.onSurfaceVariant : null,
+        surfaceTintColor: Colors.transparent,
       ),
       progressIndicatorTheme: isDark
           ? ProgressIndicatorThemeData(
