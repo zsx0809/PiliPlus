@@ -110,7 +110,7 @@ class BliDrawer extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
                 child: Text(
-                  'Bli-RS 0.1.0 · 0 行 Java · 0 个 DEX',
+                  'v2.2.0 · PiliPlus',
                   style: TextStyle(
                     fontSize: 12,
                     color: colorScheme.outline.withValues(alpha: 0.7),
@@ -226,7 +226,7 @@ class BliDrawer extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'LV$level · 纯血 Rust 极速模式',
+                          isLogin ? 'LV$level · 正式会员' : '登录畅享高清画质',
                           style: TextStyle(
                             fontSize: 12,
                             color: colorScheme.primary,
