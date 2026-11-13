@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
 mixin GridMixin {
-  late final SliverGridDelegate gridDelegate = Grid.videoCardHDelegate();
+  late final gridDelegate = Grid.videoCardHDelegate();
 
   Widget get gridSkeleton => SliverGrid(
     gridDelegate: gridDelegate,
