@@ -147,12 +147,14 @@ class Request {
     final http11Adapter = IOHttpClientAdapter(
       createHttpClient: enableSystemProxy
           ? () => HttpClient()
-              ..idleTimeout = const Duration(seconds: 15)
+              ..maxConnectionsPerHost = 64
+              ..idleTimeout = const Duration(seconds: 30)
               ..autoUncompress = false
               ..findProxy = ((_) => 'PROXY $systemProxyHost:$systemProxyPort')
               ..badCertificateCallback = (cert, host, port) => true
           : () => HttpClient()
-              ..idleTimeout = const Duration(seconds: 15)
+              ..maxConnectionsPerHost = 64
+              ..idleTimeout = const Duration(seconds: 30)
               ..autoUncompress = false, // Http2Adapter没有自动解压, 统一行为
     );
 
@@ -356,9 +358,7 @@ class Request {
     } on DioException catch (e) {
       // if (kDebugMode) debugPrint('downloadFile error: $e');
       return Response(
-        data: {
-          'message': await AccountManager.dioError(e),
-        },
+        data: {'message': await AccountManager.dioError(e)},
         statusCode: e.response?.statusCode ?? -1,
         requestOptions: e.requestOptions,
       );

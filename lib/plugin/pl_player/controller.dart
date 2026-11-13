@@ -849,6 +849,9 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
       if (Platform.isAndroid) 'ao': Pref.audioOutput,
       'hwdec': hwdec,
       'hwdec-codecs': 'all',
+      'stream-buffer-size': '1048576',
+      'demuxer-readahead-secs': '30',
+      'network-timeout': '10',
     };
     final autosync = Pref.autosync;
     if (autosync != '0') {
@@ -952,11 +955,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
 
     assert(!isLive || seekTo == null);
     await player.open(
-      Media(
-        video,
-        start: seekTo,
-        extras: extras.isEmpty ? null : extras,
-      ),
+      Media(video, start: seekTo, extras: extras.isEmpty ? null : extras),
       play: false,
     );
   }
@@ -999,10 +998,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
 
   void _startWakeLockTimer() {
     _wakeLockTimer?.cancel();
-    _wakeLockTimer = Timer(
-      const Duration(milliseconds: 500),
-      _stopWakeLock,
-    );
+    _wakeLockTimer = Timer(const Duration(milliseconds: 500), _stopWakeLock);
   }
 
   void _stopWakeLockTimer() {
@@ -1419,9 +1415,8 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
   }
 
   void onForwardBackward(Duration duration) {
-    seekTo(
-      duration.clamp(Duration.zero, videoPlayerController!.state.duration),
-    ).whenComplete(play);
+    seekTo(duration.clamp(Duration.zero, videoPlayerController!.state.duration))
+        .whenComplete(play);
   }
 
   void doubleTapFuc(DoubleTapType type) {

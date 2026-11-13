@@ -141,13 +141,11 @@ abstract final class Pref {
     if (list == null || list.length != SegmentType.values.length) {
       return SegmentType.values.map((i) => i.color).toList();
     }
-    return SegmentType.values.map(
-      (item) {
-        final String e = list[item.index];
-        final color = e.isNotEmpty ? int.tryParse('FF$e', radix: 16) : null;
-        return color != null ? Color(color) : item.color;
-      },
-    ).toList();
+    return SegmentType.values.map((item) {
+      final String e = list[item.index];
+      final color = e.isNotEmpty ? int.tryParse('FF$e', radix: 16) : null;
+      return color != null ? Color(color) : item.color;
+    }).toList();
   }
 
   static bool get feedBackEnable =>
@@ -287,7 +285,7 @@ abstract final class Pref {
     if (_setting.get(SettingBoxKey.CDNService) case final String cdnName) {
       return CDNService.values.byName(cdnName);
     }
-    return CDNService.backupUrl;
+    return CDNService.ali;
   }
 
   static String get banWordForRecommend =>
@@ -304,10 +302,7 @@ abstract final class Pref {
 
   /// 首页推荐来源。新键优先，旧版本只存了 [appRcmd] 布尔值，按原语义映射。
   static RcmdSource get rcmdSource {
-    final index = _setting.get(
-      SettingBoxKey.rcmdSource,
-      defaultValue: -1,
-    );
+    final index = _setting.get(SettingBoxKey.rcmdSource, defaultValue: -1);
     if (index >= 0 && index < RcmdSource.values.length) {
       return RcmdSource.values[index];
     }
@@ -342,9 +337,8 @@ abstract final class Pref {
   static String get blockUserID {
     String? blockUserID = _setting.get(SettingBoxKey.blockUserID);
     if (blockUserID == null || blockUserID.isEmpty) {
-      blockUserID = Digest(
-        List.generate(16, (_) => Utils.random.nextInt(256)),
-      ).toString();
+      blockUserID = Digest(List.generate(16, (_) => Utils.random.nextInt(256)))
+          .toString();
       _setting.put(SettingBoxKey.blockUserID, blockUserID);
     }
     return blockUserID;
@@ -847,10 +841,10 @@ abstract final class Pref {
       _setting.get(SettingBoxKey.enableLongShowControl, defaultValue: false);
 
   static double get bufferSize =>
-      _setting.get(SettingBoxKey.bufferSize, defaultValue: 4.0);
+      _setting.get(SettingBoxKey.bufferSize, defaultValue: 64.0);
 
   static double get bufferSec =>
-      _setting.get(SettingBoxKey.bufferSec, defaultValue: 16.0);
+      _setting.get(SettingBoxKey.bufferSec, defaultValue: 90.0);
 
   /// 直播流前向缓冲区大小（MB），0 表示跟随 [bufferSize] 的两倍
   static double get liveBufferSize =>

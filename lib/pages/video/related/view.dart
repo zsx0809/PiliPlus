@@ -19,6 +19,13 @@ class _RelatedVideoPanelState extends State<RelatedVideoPanel> with GridMixin {
   late final RelatedController _relatedController;
 
   @override
+  late final gridDelegate = const SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 1,
+    mainAxisExtent: 110,
+    mainAxisSpacing: 2,
+  );
+
+  @override
   void initState() {
     super.initState();
     _relatedController = Get.putOrFind(

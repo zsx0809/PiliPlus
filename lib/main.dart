@@ -316,10 +316,7 @@ class MyApp extends StatelessWidget {
         ),
         builder: _builder,
       ),
-      navigatorObservers: [
-        routeObserver,
-        FlutterSmartDialog.observer,
-      ],
+      navigatorObservers: [routeObserver, FlutterSmartDialog.observer],
       scrollBehavior: PlatformUtils.isDesktop
           ? const CustomScrollBehavior()
           : null,
@@ -353,10 +350,7 @@ class MyApp extends StatelessWidget {
       );
     }
     if (PlatformUtils.isDesktop) {
-      return BackDetector(
-        onBack: _onBack,
-        child: child,
-      );
+      return BackDetector(onBack: _onBack, child: child);
     }
     return child;
   }
@@ -413,10 +407,9 @@ class MyApp extends StatelessWidget {
 class _CustomHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    final client = super.createHttpClient(context);
-    // ..maxConnectionsPerHost = 32
-    /// The default value is 15 seconds.
-    //   ..idleTimeout = const Duration(seconds: 15);
+    final client = super.createHttpClient(context)
+      ..maxConnectionsPerHost = 64
+      ..idleTimeout = const Duration(seconds: 30);
     if (kDebugMode || Pref.badCertificateCallback) {
       client.badCertificateCallback = (cert, host, port) => true;
     }
