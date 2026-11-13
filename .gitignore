@@ -153,3 +153,4 @@ test*
 !/test/
 !/test/**
 temp_apk/
+*.apk
