@@ -54,11 +54,7 @@ mixin SearchVideoPanelMixin<S extends SearchVideoPanel>
   SearchVideoController get controller;
 
   @override
-  late final gridDelegate = const SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 1,
-    mainAxisExtent: 110,
-    mainAxisSpacing: 2,
-  );
+  late final gridDelegate = Grid.videoCardHSingleColumnDelegate();
 
   @override
   Widget buildHeader() {

@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
 mixin GridMixin {
-  late final gridDelegate = Grid.videoCardHDelegate();
+  late final SliverGridDelegate gridDelegate = Grid.videoCardHDelegate();
 
   Widget get gridSkeleton => SliverGrid(
     gridDelegate: gridDelegate,
@@ -28,6 +28,14 @@ abstract final class Grid {
     mainAxisExtent: mainAxisExtent,
     maxCrossAxisExtent: Grid.smallCardWidth * 2,
   );
+
+  static SliverGridDelegateWithMaxCrossAxisExtent
+  videoCardHSingleColumnDelegate({double mainAxisExtent = 110}) =>
+      SliverGridDelegateWithMaxCrossAxisExtent(
+        mainAxisSpacing: 2,
+        mainAxisExtent: mainAxisExtent,
+        maxCrossAxisExtent: 10000.0,
+      );
 }
 
 class SliverGridDelegateWithExtentAndRatio extends SliverGridDelegate {
