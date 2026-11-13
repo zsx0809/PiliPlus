@@ -596,10 +596,7 @@ class VideoDetailController extends GetxController
       alignment: Alignment.centerLeft,
       child: SlideTransition(
         position: animation.drive(
-          Tween<Offset>(
-            begin: const Offset(-1.0, 0.0),
-            end: Offset.zero,
-          ),
+          Tween<Offset>(begin: const Offset(-1.0, 0.0), end: Offset.zero),
         ),
         child: Padding(
           padding: const EdgeInsets.only(top: 5),
@@ -771,10 +768,7 @@ class VideoDetailController extends GetxController
               isMp4: entry.mediaType == 1,
               hasDashAudio: entry.hasDashAudio,
             )
-          : NetworkSource(
-              videoSource: videoUrl!,
-              audioSource: audioUrl,
-            ),
+          : NetworkSource(videoSource: videoUrl!, audioSource: audioUrl),
       seekTo: seek,
       duration: data.timeLength == null
           ? null
@@ -924,6 +918,12 @@ class VideoDetailController extends GetxController
       }
 
       if (data.acceptDesc?.contains('试看') == true) {
+        if (plPlayerController.playRepeat == PlayRepeat.autoPlayRelated ||
+            plPlayerController.playRepeat == PlayRepeat.listCycle ||
+            plPlayerController.playRepeat == PlayRepeat.listOrder) {
+          _skipToNextVideo('该视频为专属视频仅提供试看，自动跳过');
+          return;
+        }
         SmartDialog.showToast(
           '该视频为专属视频，仅提供试看',
           displayTime: const Duration(seconds: 3),
@@ -964,6 +964,12 @@ class VideoDetailController extends GetxController
           await initPlayerIfNeeded(autoFullScreenFlag);
           return;
         } else {
+          if (plPlayerController.playRepeat == PlayRepeat.autoPlayRelated ||
+              plPlayerController.playRepeat == PlayRepeat.listCycle ||
+              plPlayerController.playRepeat == PlayRepeat.listOrder) {
+            _skipToNextVideo('视频资源不存在，自动跳过');
+            return;
+          }
           SmartDialog.showToast('视频资源不存在');
           _autoPlay.value = false;
           videoState.value = false;
@@ -1007,6 +1013,12 @@ class VideoDetailController extends GetxController
       }
       await initPlayerIfNeeded(autoFullScreenFlag);
     } else {
+      if (plPlayerController.playRepeat == PlayRepeat.autoPlayRelated ||
+          plPlayerController.playRepeat == PlayRepeat.listCycle ||
+          plPlayerController.playRepeat == PlayRepeat.listOrder) {
+        _skipToNextVideo('无播放权限或遇到收费视频，自动跳过...');
+        return;
+      }
       _autoPlay.value = false;
       videoState.value = false;
       if (plPlayerController.isFullScreen.value) {
@@ -1014,6 +1026,19 @@ class VideoDetailController extends GetxController
       }
       result.toast();
     }
+  }
+
+  void _skipToNextVideo([String msg = '遇到无法播放或付费视频，自动跳过...']) {
+    SmartDialog.showToast(msg);
+    Future.delayed(const Duration(milliseconds: 600), () {
+      try {
+        if (isUgc) {
+          ugcIntroCtr.nextPlay();
+        } else {
+          pgcIntroCtr.nextPlay();
+        }
+      } catch (_) {}
+    });
   }
 
   late final List<PostSegmentModel> postList = <PostSegmentModel>[];
@@ -1626,25 +1651,21 @@ class VideoDetailController extends GetxController
       String? title;
       try {
         if (isUgc) {
-          title = Get.find<UgcIntroController>(
-            tag: heroTag,
-          ).videoDetail.value.title;
+          title = Get.find<UgcIntroController>(tag: heroTag)
+              .videoDetail
+              .value
+              .title;
         } else {
-          title = Get.find<PgcIntroController>(
-            tag: heroTag,
-          ).videoDetail.value.title;
+          title = Get.find<PgcIntroController>(tag: heroTag)
+              .videoDetail
+              .value
+              .title;
         }
       } catch (_) {}
       if (kDebugMode) {
         debugPrint(title);
       }
-      Get.toNamed(
-        '/dlna',
-        parameters: {
-          'url': url,
-          'title': ?title,
-        },
-      );
+      Get.toNamed('/dlna', parameters: {'url': url, 'title': ?title});
     } else {
       res.toast();
     }

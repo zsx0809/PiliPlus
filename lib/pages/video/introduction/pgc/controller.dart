@@ -87,7 +87,8 @@ class PgcIntroController extends CommonIntroController {
 
     super.onInit();
 
-    seasonIndex = pgcItem.seasons?.indexWhere((e) => e.seasonId == seasonId) ?? 0;
+    seasonIndex =
+        pgcItem.seasons?.indexWhere((e) => e.seasonId == seasonId) ?? 0;
     _updateEpisodeIndex(cid.value);
 
     _onGetPgcInfo();
@@ -224,10 +225,7 @@ class PgcIntroController extends CommonIntroController {
             ),
           if (isLogin)
             DialogOption(
-              child: const Text(
-                '分享至消息',
-                style: TextStyle(fontSize: 14),
-              ),
+              child: const Text('分享至消息', style: TextStyle(fontSize: 14)),
               onPressed: () {
                 Get.back();
                 try {
@@ -396,6 +394,10 @@ class PgcIntroController extends CommonIntroController {
         (e) => e.cid == videoDetailCtr.cid.value,
       );
       int nextIndex = currentIndex + 1;
+      while (nextIndex < episodes.length &&
+          UgcIntroController.isPayOrCharging(episodes[nextIndex].badge)) {
+        nextIndex++;
+      }
       // 列表循环
       if (nextIndex >= episodes.length) {
         if (playRepeat == PlayRepeat.listCycle) {
