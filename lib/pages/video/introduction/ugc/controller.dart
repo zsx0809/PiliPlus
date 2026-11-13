@@ -13,6 +13,7 @@ import 'package:PiliPlus/http/search.dart';
 import 'package:PiliPlus/http/user.dart';
 import 'package:PiliPlus/http/video.dart';
 import 'package:PiliPlus/models/common/video/source_type.dart';
+import 'package:PiliPlus/models/model_hot_video_item.dart';
 import 'package:PiliPlus/models_new/member_card_info/data.dart';
 import 'package:PiliPlus/models_new/relation/data.dart';
 import 'package:PiliPlus/models_new/video/video_ai_conclusion/model_result.dart';
@@ -770,9 +771,15 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
         targetItem = item;
         break;
       }
-      targetItem ??=
-          response.firstWhereOrNull((item) => item.bvid != bvid) ??
-          response.first;
+      if (targetItem == null) {
+        for (final item in response) {
+          if (item.bvid != bvid) {
+            targetItem = item;
+            break;
+          }
+        }
+      }
+      targetItem ??= response.first;
 
       onChangeEpisode(
         BaseEpisodeItem(
